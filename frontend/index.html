@@ -12,8 +12,8 @@
     </header>
     <main>
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search products...">
-            <button id="searchButton">Search</button>
+            <input type="text" id="search-input" placeholder="Search products...">
+            <button id="search-button">Search</button>
         </div>
         <table id="productTable">
             <thead>
@@ -26,6 +26,7 @@
                     <th>Brand</th>
                     <th>Category</th>
                     <th>Thumbnail</th>
+                    <th>Gallery</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,8 +34,8 @@
             </tbody>
         </table>
         <div class="pagination">
-            <button id="prevPageButton" disabled>Previous</button>
-            <button id="nextPageButton" disabled>Next</button>
+            <button id="prevPageButton" disabled><</button>
+            <button id="nextPageButton" disabled>></button>
         </div>
     </main>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

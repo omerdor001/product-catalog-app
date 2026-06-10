@@ -32,10 +32,7 @@ def index():
 def get_products():
     get_products_cached()
     page = request.args.get("page", 1, type=int)
-    limit=15
-    start = (page - 1) * limit
-    end = start + limit
-    paginated_products = products["data"][start:end]
+    paginated_products = paginate_products(products["data"],page, 15)
     return {"products": paginated_products,"page": page,"total": len(products["data"])}
 
 # Applying search
@@ -45,13 +42,23 @@ def search_products(query):
     found_products = []
     if found_products_request.status_code == 200 and found_products_request.json().get("products"):
         found_products = found_products_request.json().get("products")
-    return {"products": found_products}
+        page = request.args.get("page", 1, type=int)
+        found_products = paginate_products(found_products,page, 15)
+        return {"products": found_products,"page": page,"total": len(found_products) }
+    else:
+        return {"products": [],"page": 1,"total": 0 }
 
 # Gallery
 @app.route("/api/products/<int:product_id>")
 def get_product(product_id):
     product = next((p for p in products["data"] if p.get("id") == product_id), None)
     return {"gallery": product["images"]} if product else {"product": None}
+
+# Pagination function
+def paginate_products(products_list, page, limit):
+    start = (page - 1) * limit
+    end = start + limit
+    return products_list[start:end]
 
 if __name__ == "__main__":
     app.run(debug=True)

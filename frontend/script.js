@@ -1,5 +1,5 @@
-let searchInput = document.getElementById('searchInput');
-let searchButton = document.getElementById('searchButton');
+let searchInput = document.getElementById('search-input');
+let searchButton = document.getElementById('search-button');
 let nextPageButton = document.getElementById('nextPageButton');
 let prevPageButton = document.getElementById('prevPageButton');
 let productsToShow=[];
@@ -44,12 +44,16 @@ async function fetchProducts() {
     renderPagination();
 }
 
-// function to handle search products (maybe pagination in the future)
+// function to handle search products
 async function searchProducts(query) {
     const response = await fetch(`/api/products/search/${query}`);
     const data = await response.json();
     productsToShow = data.products;
+    currentPage = data.page;
+    console.log(data.page);
+    total = data.total;
     renderProducts();
+    renderPagination();
 }
 
 // function for handle showing gallery of a product
@@ -74,13 +78,29 @@ function renderProducts() {
             <td>${product.stock}</td>
             <td>${product.brand}</td>
             <td>${product.category}</td>
-            <td><img src="${product.thumbnail}" alt="${product.title}"></td>
+            <td><img src="${product.thumbnail}" alt="${product.title}" style="width: 100px;"></td>
         `;
         const galleryButton = document.createElement('button');
-        galleryButton.textContent = 'View Gallery';
+        galleryButton.textContent = 'View';
         galleryButton.classList.add('galleryButton');
+
+        // Styling the gallery button
+        galleryButton.style.backgroundColor = '#fff';
+        galleryButton.style.color = '#272626';
+        galleryButton.style.border = '1px solid #333';
+        galleryButton.style.padding = '5px 10px';
+        galleryButton.style.borderRadius = '5px';
+        galleryButton.style.fontSize = '14px';
+        galleryButton.style.marginTop = '30px';
+        galleryButton.style.transition = 'background-color 0.3s, color 0.3s';
+        galleryButton.style.cursor = 'pointer';
+
         galleryButton.addEventListener('click', () => getProductGallery(row,product.id));
-        row.appendChild(galleryButton);
+        const td= document.createElement('td');
+        td.style.textAlign = 'center';
+        td.style.verticalAlign = 'middle';
+        td.appendChild(galleryButton);
+        row.appendChild(td);
         productTable.appendChild(row);
     });
 }
@@ -97,8 +117,8 @@ function renderGallery(row) {
     const galleryRow = document.createElement('tr');
     galleryRow.classList.add('galleryRow');
     galleryRow.innerHTML = `
-        <td colspan="8">
-            ${productGallery.map(image => `<img src="${image}" alt="Gallery Image">`).join('')}      
+        <td colspan="8" style="border:none;">
+            ${productGallery.map(image => `<img src="${image}" alt="Gallery Image" style="width: 300px; margin: 5px;">`).join('')}      
         </td>
     `;
     if (row.nextSibling && row.nextSibling.classList.contains('galleryRow')) {

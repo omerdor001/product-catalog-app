@@ -18,7 +18,7 @@ product-catalog-app/
 └── frontend/
     ├── index.html      # Main page
     ├── script.js       # Fetch, render, pagination, and gallery logic
-    └── style.css       # Styles
+    └── styles.css       # Styles
 ```
 
 ## Requirements
