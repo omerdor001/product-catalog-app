@@ -30,7 +30,7 @@ def get_products():
     start = (page - 1) * limit
     end = start + limit
     paginated_products = products["data"][start:end]
-    return {"products": paginated_products,"page": page}
+    return {"products": paginated_products,"page": page,"total": len(products["data"])}
 
 # Applying search
 @app.route("/api/products/search/<string:query>")
