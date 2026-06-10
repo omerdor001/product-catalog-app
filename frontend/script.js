@@ -7,7 +7,8 @@ let productGallery =[];
 let currentPage = 1;
 let total = 0;
 
-// Event listeners for pagination and search
+// Event listeners for pagination and search buttons. 
+// They call the appropriate functions to fetch products or search based on user input, and update the current page accordingly.
 prevPageButton.addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
@@ -33,7 +34,8 @@ searchButton.addEventListener('click', () => {
 });
 
 
-//function to fetch products
+//Fetches products for the current page from the backend API and updates the productsToShow array, currentPage, and total variables. 
+//Then it calls renderProducts() and renderPagination() to update the UI.
 async function fetchProducts() {
     const response = await fetch(`/api/products?page=${currentPage}`);
     const data = await response.json();
@@ -44,7 +46,8 @@ async function fetchProducts() {
     renderPagination();
 }
 
-// function to handle search products
+// Searches for products based on the user's query and updates the displayed products and pagination accordingly. 
+// If the search query is empty, it fetches all products for the current page.
 async function searchProducts(query) {
     const response = await fetch(`/api/products/search/${query}`);
     const data = await response.json();
@@ -56,7 +59,7 @@ async function searchProducts(query) {
     renderPagination();
 }
 
-// function for handle showing gallery of a product
+// Fetching up to 3 gallery images for a specific product ID and then rendering the gallery below the clicked product row. 
 async function getProductGallery(row,product_id) {
     const response = await fetch(`/api/products/${product_id}`);
     const data = await response.json();
@@ -64,7 +67,8 @@ async function getProductGallery(row,product_id) {
     renderGallery(row);
 }
 
-// function to render products
+// Renders the products in the table based on the current productsToShow array. 
+// Each product row includes a "View" button to show the product gallery.
 function renderProducts() {
     const productTable = document.querySelector('#productTable tbody');
     productTable.innerHTML = '';
@@ -105,14 +109,15 @@ function renderProducts() {
     });
 }
 
-// function to render pagination
+// Disables/enables pagination buttons based on the current page and total pages. 
 function renderPagination() {
     const totalPages = Math.ceil(total / 15);
-    prevPageButton.disabled = currentPage === 1;
-    nextPageButton.disabled = currentPage === totalPages;
+    prevPageButton.disabled = currentPage <= 1;
+    nextPageButton.disabled = currentPage >= totalPages;
 }
 
-// function to render gallery
+// Inserts a new row with the product gallery images below the clicked product row. 
+// If the gallery is already shown, it removes the gallery row.
 function renderGallery(row) {
     const galleryRow = document.createElement('tr');
     galleryRow.classList.add('galleryRow');
