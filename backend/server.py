@@ -1,15 +1,17 @@
 from time import time
-from flask import Flask,request
+from flask import Flask,request,render_template
 import requests
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            template_folder='../frontend',
+            static_folder='../frontend')
 PRODUCTS_API_URL = 'https://dummyjson.com/products'
 products = { "data": [] , "cache_time": 0 }
 TTL_CACHE = 300
 
 # Fetch products from the API
 def fetch_products():
-    response = requests.get(PRODUCTS_API_URL)
+    response = requests.get(f"{PRODUCTS_API_URL}?limit=0")
     if response.status_code == 200 :
         return response.json().get("products", [])
     return []
@@ -20,6 +22,10 @@ def get_products_cached():
     if now - products["cache_time"] > TTL_CACHE:
         products["data"] = fetch_products()
         products["cache_time"] = now
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 # Collect all products
 @app.route("/api/products")

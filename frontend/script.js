@@ -53,11 +53,11 @@ async function searchProducts(query) {
 }
 
 // function for handle showing gallery of a product
-async function getProductGallery(product_id) {
+async function getProductGallery(row,product_id) {
     const response = await fetch(`/api/products/${product_id}`);
     const data = await response.json();
     productGallery = data.gallery;
-    renderGallery();
+    renderGallery(row);
 }
 
 // function to render products
@@ -76,7 +76,11 @@ function renderProducts() {
             <td>${product.category}</td>
             <td><img src="${product.thumbnail}" alt="${product.title}"></td>
         `;
-        row.addEventListener('click', () => getProductGallery(product.id));
+        const galleryButton = document.createElement('button');
+        galleryButton.textContent = 'View Gallery';
+        galleryButton.classList.add('galleryButton');
+        galleryButton.addEventListener('click', () => getProductGallery(row,product.id));
+        row.appendChild(galleryButton);
         productTable.appendChild(row);
     });
 }
@@ -88,16 +92,20 @@ function renderPagination() {
     nextPageButton.disabled = currentPage === totalPages;
 }
 
-// function to render product's gallery
-function renderGallery() {
-    const galleryContainer = document.getElementById('galleryContainer');
-    galleryContainer.innerHTML = '';
-    productGallery.forEach(imageUrl => {
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = 'Product Image';
-        galleryContainer.appendChild(img);
-    });
+// function to render gallery
+function renderGallery(row) {
+    const galleryRow = document.createElement('tr');
+    galleryRow.classList.add('galleryRow');
+    galleryRow.innerHTML = `
+        <td colspan="8">
+            ${productGallery.map(image => `<img src="${image}" alt="Gallery Image">`).join('')}      
+        </td>
+    `;
+    if (row.nextSibling && row.nextSibling.classList.contains('galleryRow')) {
+        row.parentNode.removeChild(row.nextSibling);
+    } else {
+        row.parentNode.insertBefore(galleryRow, row.nextSibling);
+    }
 }
 
 // Initial fetch of products
